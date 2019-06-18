@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import ErrorMessage from "./ErrorMessage";
+import Loader from "./Loader";
 
 import InstaService from "../services/instaservice";
 
@@ -9,7 +10,8 @@ export default class Pallete extends Component {
 
   state = {
     photos: [],
-    error: false
+    error: false,
+    loading: true
   };
 
   componentDidMount() {
@@ -19,8 +21,8 @@ export default class Pallete extends Component {
   updatePallete() {
     this._InstaService
       .getAllPhotos()
-      .then((photos) => this.setState({ photos, error: false }))
-      .catch((err) => this.setState({ error: true }));
+      .then((photos) => this.setState({ photos, error: false, loading: false }))
+      .catch((err) => this.setState({ error: true, loading: false }));
   }
 
   renderItems(arr) {
@@ -32,9 +34,13 @@ export default class Pallete extends Component {
   }
 
   render() {
-    const { photos, error } = this.state;
+    const { photos, error, loading } = this.state;
     if (error) {
       return <ErrorMessage />;
+    }
+
+    if (loading) {
+      return <Loader />;
     }
 
     const items = this.renderItems(photos);

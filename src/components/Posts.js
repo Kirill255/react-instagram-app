@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import User from "./User";
 // // import Post from "./Post";
 import ErrorMessage from "./ErrorMessage";
+import Loader from "./Loader";
 
 import InstaService from "../services/instaservice";
 
@@ -11,7 +12,8 @@ export default class Posts extends Component {
 
   state = {
     posts: [],
-    error: false
+    error: false,
+    loading: true
   };
 
   componentDidMount() {
@@ -21,8 +23,8 @@ export default class Posts extends Component {
   updatePosts() {
     this._InstaService
       .getAllPosts()
-      .then((posts) => this.setState({ posts, error: false }))
-      .catch((err) => this.setState({ error: true }));
+      .then((posts) => this.setState({ posts, error: false, loading: false }))
+      .catch((err) => this.setState({ error: true, loading: false }));
   }
 
   renderItems(arr) {
@@ -42,9 +44,13 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { posts, error } = this.state;
+    const { posts, error, loading } = this.state;
     if (error) {
       return <ErrorMessage />;
+    }
+
+    if (loading) {
+      return <Loader />;
     }
 
     const items = this.renderItems(posts);
